@@ -51,10 +51,10 @@ R and RStudio are separate installations required for the R analysis workflow.
 
 ## Documentation
 
-- [Data format and timing](treadscope-release-preparation/docs/data-and-timing.md)
-- [Hardware integration and serial protocol](treadscope-release-preparation/docs/hardware.md)
-- [Screenshots](treadscope-release-preparation/docs/screenshots.md)
-- [Changelog](treadscope-release-preparation/CHANGELOG.md)
+- [Data format and timing](TreadScope_Release_Prep/docs/data-and-timing.md)
+- [Hardware integration and serial protocol](TreadScope_Release_Prep/docs/hardware.md)
+- [Screenshots](TreadScope_Release_Prep/docs/screenshots.md)
+- [Changelog](TreadScope_Release_Prep/CHANGELOG.md)
 
 ## Project status
 
