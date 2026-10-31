@@ -1,0 +1,3 @@
+PyQt6
+pywin32; sys_platform == "win32"
+pyserial
