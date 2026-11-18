@@ -4,7 +4,7 @@ The supplied photograph shows an Arduino UNO-compatible R3 board, XY-MOS driver,
 
 The uploaded release ZIP does not contain Arduino firmware. Add the exact tested sketch to `firmware/` before distributing a reproducible hardware package. Confirm pin assignments, active levels, supply rating, ground connections and valve protection from that sketch and the real wiring.
 
-## Host protocol (from v1.1.21 source)
+## Host protocol (from v1.1.38 source)
 Commands are ASCII lines terminated by newline:
 - `PING`
 - `PULSE,<id>,<duration_ms>`
