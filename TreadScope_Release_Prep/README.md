@@ -1,21 +1,18 @@
 # TreadScope
 
-Acquisition, stimulus control and analysis for spherical treadmill experiments.
+**Acquisition, stimulus control, replay, and analysis for spherical treadmill experiments.**
 
-TreadScope is a Windows research application connecting mouse-sensor movement recording, Arduino stimulus control, replay, response-latency review, project management and R analysis export in one desktop workflow.
+TreadScope is a Windows desktop application for recording movement from an optical mouse sensor and linking it to stimulus events. It supports manual capture, state-triggered trial sequences, trial-by-trial review, project-level quality control, and export to R.
 
-**Version:** 1.1.21 · **Author:** Zhengyu Qian (Axia10032)
+**Version:** 1.1.38 · **Author:** Zhengyu Qian ([Axia10032](https://github.com/Axia10032))
 
-## Features
-- Selected-device Windows Raw Input acquisition and independent X/Y calibration.
-- Serial stimulus commands and recorded ON/OFF acknowledgements.
-- Replay with trajectories, velocity plots and onset-detail review.
-- Analysis and Explorer views for response probability, latency, movement and trial progression.
-- Raw recording ZIP archives, SQLite project metadata/history and CSV exports.
-- R/RStudio analysis export and local dashboard workflow.
+![Acquisition: five simulated trials with the selected trial highlighted in the sequence timeline](assets/screenshots/v1.1.38/acquisition.png)
 
-## Install and launch
-Install Python on Windows. In the extracted project directory, run:
+*Acquisition after a five-trial simulated sequence. The shaded green span identifies the trial shown in the trajectory and speed plots.*
+
+## Install on Windows
+
+Extract the Windows source package and open Command Prompt in the folder containing `treadscope.py`. Install Python first, then run:
 
 ```bat
 py -m venv .venv
@@ -23,27 +20,47 @@ py -m venv .venv
 .venv\Scripts\python.exe treadscope.py
 ```
 
-After installation, `run.bat` launches the same environment. Dependency versions are not yet pinned to the author's tested environment. R/RStudio are separate installations needed for the R workflow.
+After setup, double-click `run.bat` to launch using the same environment. The source package does not include Python or a Windows installer. Arduino hardware is optional for simulated stimulation. R and RStudio are separate installations for the optional model workflow.
 
-## Quick start
-1. Select the intended sensor in Acquisition; use Detect Moving Device to identify it.
-2. Configure the output location and trial information. Calibrate X and Y with known physical surface travel.
-3. For physical stimulation, connect the matching Arduino firmware and confirm the port and baud rate.
-4. Start recording, deliver a stimulus and stop or use automatic stop. Complete trial labels and Save.
-5. Open the saved recording in Replay and review movement onset using Latency Settings.
-6. Select project records in Analysis, calculate results, inspect Explorer and export results as needed.
+## Workflow
 
-See [data and timing](docs/data-and-timing.md), [hardware](docs/hardware.md), [screenshots](docs/screenshots.md) and [release preparation](docs/release-preparation.md).
+| Workspace | What to do |
+| --- | --- |
+| **Acquisition** | Select the physical Raw Input sensor and verify it with **Detect Moving Device**. Set X/Y calibration from measured travel. For an automated condition, open **Stillness Settings**, enter the animal, airspeed, trial count and timing, then choose the trigger rules. Run the sequence, click the shaded trial spans to inspect recordings, and save or discard the staged group. With Arduino off, the sequence uses simulated stimulus markers. |
+| **Replay** | Open a saved ZIP and choose **Latency Review** for a plot of stimulus ON, estimated airflow arrival, detected event and its confirmation. Saved automated sequences open with a clickable group overview; the footer button switches between that overview and single-recording playback progress. |
+| **Analysis** | Use **Analysis Rules** to define a response, **Calculate All** to apply the settings to the selected scope, and the searchable project, group, day, animal and airspeed filters to narrow the dataset. Simulated events are excluded unless enabled. Export latencies, statistics or a recording summary. |
+| **Explorer** | Compare stimulus-aligned movement, response probability, cumulative response and distance, per-animal results, heatmaps and trial progression. Related categorical plots place groups at the same airspeed next to each other. |
+| **Project Data** | Search or filter the project catalog; inspect the selected recording's motion, derived results, metadata and history. Edit labels, exclude or restore with a reason, open Replay, analyze a selection, or export recording-level and stimulus-level CSVs. |
 
-## Status
-The author reports completion of the full functional workflow test. This preparation bundle preserves the uploaded Python source byte-for-byte under a stable entry filename. It has not been independently tested on Windows here. The matching Arduino firmware and a downloadable example recording are still to be added.
+## Configure triggering, detection and review
 
-## Author and acknowledgments
-Developed by Zhengyu Qian. The author thanks the University of Toronto Scarborough (UTSC) for providing opportunities to test TreadScope.
+| Setting | What it controls |
+| --- | --- |
+| **Stillness & Automation** | **When to stimulate.** Combine sustained stillness, sustained movement and sustained speed range with **Any / All**. Set hold durations and measurement windows, the minimum stop-to-next-ON interval, the time to keep recording after ON, and an optional wait limit. The post-ON recording time and the stimulus pulse length are separate controls. |
+| **Analysis Rules** | **What counts as a response.** Use movement onset, a pause, a speed increase over baseline, or a heading change, individually or combined. Set the trailing measurement window, continuous confirmation, pre-ON baseline, post-ON search and optional airflow correction. |
+| **Quality Review Rules** | **What to inspect manually.** Flag recording faults, timing issues or out-of-range latency, peak speed, path length and net displacement. Yellow indicates pending review; green indicates confirmed review. Use **Review Flag** to open Replay at the reported time when available. A QC flag or confirmation leaves response status and statistical inclusion unchanged. |
 
-The author confirms that the application contains no copied third-party code and no unpublished third-party code or materials. Third-party runtime dependencies retain their own licenses. Project license selection is pending; this preparation bundle does not assign a license.
+![Replay with detected event, estimated arrival, raw latency, corrected latency, and confirmation interval](assets/screenshots/v1.1.38/replay-latency.png)
 
-## Background
-Lott, G. K., Rosen, M. J., and Hoy, R. R. (2007). An Inexpensive Sub-Millisecond System for Walking Measurements of Small Animals Based on Optical Computer Mouse Technology. Journal of Neuroscience Methods, 161, 55–61.
+*Single-recording Replay. The estimated airflow delay is subtracted from raw latency. The shaded confirmation interval is displayed separately from the event time.*
 
-This reference describes related measurement methods; it is not a claim of inherited code or equivalent timing performance.
+## Data and R export
+
+Recording ZIPs retain raw motion, stimulus events and acquisition metadata. Project-level analysis, edits and QC confirmations are stored in SQLite. Keep the recording archives and `project.sqlite` together when backing up a project. Host timestamps describe software receipt; characterize stimulus timing and calibrate airflow delay for your own setup.
+
+The R button exports a snapshot of the current Analysis filters, with a generated R project and model script. The included templates fit a binomial mixed model for response probability and log-scale mixed models for positive continuous outcomes. Check eligibility, model warnings and diagnostics before inference. The template includes an animal random intercept; it does not adjust for day or trial order.
+
+## Documentation
+
+- [Release notes for v1.1.38](docs/release-v1.1.38.md)
+- [Version-by-version changelog since v1.1.21](CHANGELOG.md)
+- [Screenshots of the five workspaces and three settings dialogs](docs/screenshots.md)
+- [Recording format, timing and R models](docs/data-and-timing.md)
+- [Hardware integration and serial protocol](docs/hardware.md)
+- [Citation metadata](CITATION.cff)
+
+A matching Arduino sketch and downloadable example recording are not included. Live hardware recording requires Windows. A project license has not yet been assigned; third-party dependencies retain their respective licenses.
+
+Developed by **Zhengyu Qian**. Thanks to the **University of Toronto Scarborough (UTSC)** for providing opportunities to test TreadScope.
+
+**Related work:** Lott, G. K., Rosen, M. J., and Hoy, R. R. (2007). An Inexpensive Sub-Millisecond System for Walking Measurements of Small Animals Based on Optical Computer Mouse Technology. *Journal of Neuroscience Methods*, 161, 55–61.
